@@ -14,6 +14,7 @@ var span = document.getElementsByClassName("close")[0];
 var newFirstName = document.getElementById("newFirstName");
 var newLastName = document.getElementById("newLastName");
 var newEmail = document.getElementById("newEmail");
+var submitEditBtn = document.getElementById("submitEditBtn");
 
 if(loginBtn){
   loginBtn.addEventListener("click", ()=> {
@@ -107,6 +108,7 @@ function displayContacts(){
         modal.style.display = "block";
         if(newFirstName)alert("I am here");
         var index = this.parentNode.parentNode.rowIndex;
+        localStorage.setItem('index', JSON.stringify(index));
           var firstNameInCurrentRow = document.getElementById("contact-table").rows[index].cells[0].innerText;
           alert(firstNameInCurrentRow);
           var lastNameInCurrentRow = document.getElementById("contact-table").rows[index].cells[1].innerHTML;
@@ -120,6 +122,7 @@ function displayContacts(){
       currentDeleteBtnInside.onclick = function(){
           alert("the btn is visibla");
           var index = this.parentNode.parentNode.rowIndex;
+
           alert(index);
           var emailInCurrentRow = document.getElementById("contact-table").rows[index].cells[2].innerHTML;
           alert(emailInCurrentRow);
@@ -168,15 +171,61 @@ window.onclick = function(event) {
   }
 }
 
-function fillTheEditForm(){
+if (submitEditBtn){
+    submitEditBtn.onclick = function(){
 
-      if (newFirstName.length) {
-        alert("heyooooo");
-        newFirstName.innerText = firstNameInCurrentRow;
-        newLastName.innerText = lastNameInCurrentRow;
-        newEmail.innerText = emailInCurrentRow;
-
-      } else {
-        setTimeout(fillTheEditForm, 300); // try again in 300 milliseconds
+      var index = JSON.parse(localStorage.index);
+      alert("index" + index);
+      var emailInCurrentRow = document.getElementById("contact-table").rows[index].cells[2].innerHTML;
+      alert(emailInCurrentRow);
+      user = localStorage.getItem("username");
+      var storedContacts = [];
+      var savedContact = {};
+      var indexInArray = 0;
+      storedContacts = JSON.parse(localStorage.getItem(user));
+      for(var i=0; i<storedContacts.length; i++){
+          savedContact = storedContacts[i];
+          if(savedContact["email"] === emailInCurrentRow){
+              indexInArray = i;
+          }
       }
+        var updatedFirstName = newFirstName.value;
+        var updatedLastName = newLastName.value;
+        var updatedEmail="";
+         if(document.getElementById("contact-table").rows[index].cells[2].value !== newEmail.value){
+                 for(var i=0; i<storedContacts.length; i++){
+                     savedContact = storedContacts[i];
+                     if(newEmail.value === savedContact["email"]){
+                         updatedEmail = emailInCurrentRow;
+                         alert("This email already exists");
+                         break;
+                     }else updatedEmail = newEmail.value;
+                  }
+               }else updatedEmail = newEmail.value;
+
+      var editedContact = {
+                "firstname" : updatedFirstName,
+                "familyname"  : updatedLastName,
+                "email" : updatedEmail
+              };
+
+      storedContacts[indexInArray] = editedContact;
+      document.getElementById("contact-table").rows[index].cells[0].value = editedContact["firstname"];
+      document.getElementById("contact-table").rows[index].cells[1].value = editedContact["familyname"];
+      document.getElementById("contact-table").rows[index].cells[2].value = editedContact["email"];
+      localStorage.setItem(user, JSON.stringify(storedContacts));
+      displayContacts();
+
+    }
+
+    function findArrayIndex(email, array){
+        for(var i = 0; i<array.length; i++){
+            var obj = array[i];
+            if(obj["email"]===email){
+                return i;
+            }
+        }
+    }
 }
+
+
