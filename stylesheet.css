@@ -1,5 +1,6 @@
 body{
   text-align:center;
+  width:90%;
 }
 /* The Modal (background) */
 .modal {
@@ -30,6 +31,7 @@ body{
   float: right;
   font-size: 28px;
   font-weight: bold;
+  padding: 10px;
 }
 
 .close:hover,
@@ -37,4 +39,23 @@ body{
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+#submitEditBtn{
+    color: green;
+    padding-top: 10px;
+    width: 80%;
+}
+#showContacts{
+    color: green;
+    padding: 25px;
+    width: 80%;
+    margin: 20px;
+}
+table{
+    width: 80%;
+    margin: 20px;
+}
+table, td, th{
+    border: 1px solid black;
+
 }
