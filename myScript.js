@@ -85,7 +85,6 @@ function displayContacts(){
     var savedContact = {};
     storedContacts = JSON.parse(localStorage.getItem(user));
     var table = document.getElementById('contact-table');
-    alert(storedContacts.length);
     for(var i = 0; i < storedContacts.length; i++){
 
       var savedContact = storedContacts[i];
@@ -106,11 +105,10 @@ function displayContacts(){
       currentEditBtnInside.id = 'cl-edit';
       currentEditBtnInside.onclick = function(){
         modal.style.display = "block";
-        if(newFirstName)alert("I am here");
         var index = this.parentNode.parentNode.rowIndex;
         localStorage.setItem('index', JSON.stringify(index));
           var firstNameInCurrentRow = document.getElementById("contact-table").rows[index].cells[0].innerText;
-          alert(firstNameInCurrentRow);
+
           var lastNameInCurrentRow = document.getElementById("contact-table").rows[index].cells[1].innerHTML;
           var emailInCurrentRow = document.getElementById("contact-table").rows[index].cells[2].innerHTML;
           newFirstName.value = firstNameInCurrentRow;
@@ -120,12 +118,10 @@ function displayContacts(){
 
       currentDeleteBtnInside.id = 'cl-delete';
       currentDeleteBtnInside.onclick = function(){
-          alert("the btn is visibla");
-          var index = this.parentNode.parentNode.rowIndex;
 
-          alert(index);
+          var index = this.parentNode.parentNode.rowIndex;
           var emailInCurrentRow = document.getElementById("contact-table").rows[index].cells[2].innerHTML;
-          alert(emailInCurrentRow);
+
           user = localStorage.getItem("username");
           var storedContacts = [];
           var savedContact = {};
@@ -175,9 +171,8 @@ if (submitEditBtn){
     submitEditBtn.onclick = function(){
 
       var index = JSON.parse(localStorage.index);
-      alert("index" + index);
+
       var emailInCurrentRow = document.getElementById("contact-table").rows[index].cells[2].innerHTML;
-      alert(emailInCurrentRow);
       user = localStorage.getItem("username");
       var storedContacts = [];
       var savedContact = {};
