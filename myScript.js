@@ -8,6 +8,7 @@ var username = document.querySelector("#username");
 var loginBtn = document.querySelector("#loginBtn");
 var goToListBtn = document.getElementById("goToListBtn");
 var showContacts = document.getElementById("showContacts");
+var deleteBtn = document.getElementById('cl-delete');
 
 if(loginBtn){
   loginBtn.addEventListener("click", ()=> {
@@ -68,7 +69,40 @@ if(submitBtn) {
 }
 // -------------------------------------------------------------------------------------------------------
 if(showContacts){
-  showContacts.addEventListener("click", () =>{
+  showContacts.addEventListener("click", displayContacts);
+}
+
+//function findTheRowIndex(element){
+//    var btnParent = this.parentNode;
+//    var index = btnParent.rowIndex;
+//
+//}
+
+
+//function removeContact(){
+//
+//        alert("the btn is visibla");
+//        var index = this.parentNode.rowIndex;
+//
+//        alert(index);
+//        var emailInCurrentRow = document.getElementById("contact-table").rows[index].cells[2].innerHTML;
+//        alert(emailInCurrentRow);
+//        user = localStorage.getItem("username");
+//        var storedContacts = [];
+//        var savedContact = {};
+//        var indexInArray;
+//        storedContacts = JSON.parse(localStorage.getItem(user));
+//        for(var i=0; i<storedContacts.length; i++){
+//            savedContact = storedContacts[i];
+//            if(savedContact["email"] === emailInCurrentRow){
+//                indexInArray = i;
+//            }
+//        }
+//        storedContacts.splice(i, 1);
+//        localStorage.setItem(user, JSON.stringify(storedContacts));
+//        displayContacts();
+//}
+function displayContacts(){
     user = localStorage.getItem("username");
     var storedContacts = [];
     var savedContact = {};
@@ -84,27 +118,51 @@ if(showContacts){
       var currentFamilyNameCol = currentRow.insertCell(1);
       var currentEmailCol = currentRow.insertCell(2);
       var currentEditBtn = currentRow.insertCell(3);
+      var currentEditBtnInside = document.createElement("BUTTON");
       var currentDeleteBtn = currentRow.insertCell(4);
-
+      var currentDeleteBtnInside = document.createElement("BUTTON");
       currentRow.id = 'cl-table-row';
       currentNameCol.id = 'cl-name';
       currentFamilyNameCol.id = 'cl-familyName';
       currentEmailCol.id = 'cl-email';
-      currentEditBtn.id = 'cl-edit';
-      currentDeleteBtn.id = 'cl-delete';
+      currentEditBtnInside.id = 'cl-edit';
+      currentDeleteBtnInside.id = 'cl-delete';
+      currentDeleteBtnInside.onclick = function(){
+        alert("the btn is visibla");
+        var index = this.parentNode.parentNode.rowIndex;
+        alert(index);
+        var emailInCurrentRow = document.getElementById("contact-table").rows[index].cells[2].innerHTML;
+        alert(emailInCurrentRow);
+        user = localStorage.getItem("username");
+        var storedContacts = [];
+        var savedContact = {};
+        var indexInArray;
+        storedContacts = JSON.parse(localStorage.getItem(user));
+        for(var i=0; i<storedContacts.length; i++){
+            savedContact = storedContacts[i];
+            if(savedContact["email"] === emailInCurrentRow){
+                indexInArray = i;
+            }
+        }
+        storedContacts.splice(indexInArray, 1);
+        document.getElementById("contact-table").deleteRow(index);
+        localStorage.setItem(user, JSON.stringify(storedContacts));
+
+      };
 
       currentNameCol.innerHTML = savedContact['firstname'];
       currentFamilyNameCol.innerHTML = savedContact['familyname'];
       currentEmailCol.innerHTML = savedContact['email'];
-      currentDeleteBtn.innerHTML = '<i class="fas fa-dumpster"></i>';
-      currentEditBtn.innerHTML = '<i class="fas fa-user-edit"></i>';
+      currentDeleteBtnInside.innerHTML = '<i class="fas fa-dumpster"></i>';
+      currentEditBtnInside.innerHTML = '<i class="fas fa-user-edit"></i>';
 
       currentRow.appendChild(currentNameCol);
       currentRow.appendChild(currentFamilyNameCol);
       currentRow.appendChild(currentEmailCol);
       currentRow.appendChild(currentEditBtn);
       currentRow.appendChild(currentDeleteBtn);
+      currentEditBtn.appendChild(currentEditBtnInside);
+      currentDeleteBtn.appendChild(currentDeleteBtnInside);
 
     }
-  })
 }
