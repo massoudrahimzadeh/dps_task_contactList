@@ -1,8 +1,8 @@
 // console.log("it is connected");
 
 var user = "";
-var contacts = [];
-var myContactList = {};
+var storedContacts = [];
+var savedContact = {};
 var submitBtn = document.getElementById("submitBtn");
 var username = document.querySelector("#username");
 var loginBtn = document.querySelector("#loginBtn");
@@ -15,6 +15,7 @@ var newFirstName = document.getElementById("newFirstName");
 var newLastName = document.getElementById("newLastName");
 var newEmail = document.getElementById("newEmail");
 var submitEditBtn = document.getElementById("submitEditBtn");
+var table = document.getElementById("contact-table");
 
 if(loginBtn){
   loginBtn.addEventListener("click", ()=> {
@@ -30,12 +31,10 @@ if(submitBtn) {
   submitBtn.addEventListener("click", () => {
 
     user = localStorage.getItem("username");
-    var contact = {};
-    var storedContacts = [];
     var firstname = document.getElementById("firstname").value;
     var familyname = document.getElementById("familyname").value;
     var email = document.getElementById("email").value;
-    contact = {
+    savedContact = {
       "firstname" : firstname,
       "familyname"  : familyname,
       "email" : email
@@ -45,7 +44,7 @@ if(submitBtn) {
       alert("Please fill up the form completely!");
     }else if(localStorage.getItem(user) === null){
 
-        storedContacts.push(contact);
+        storedContacts.push(savedContact);
         localStorage.setItem(user, JSON.stringify(storedContacts));
         alert("Thanks for adding your first contact")
       }else{
@@ -54,8 +53,8 @@ if(submitBtn) {
 
         for(var i=0; i<storedContacts.length; i++){
 
-          var savedContact = storedContacts[i];
-          var emailInStorage = savedContact['email'];
+          var contact = storedContacts[i];
+          var emailInStorage = contact['email'];
           if(emailInStorage === email){
 
             localStorage.setItem(user, JSON.stringify(storedContacts));
@@ -65,7 +64,7 @@ if(submitBtn) {
           }
         }
         if(!isExisted){
-            storedContacts.push(contact);
+            storedContacts.push(savedContact);
             localStorage.setItem(user, JSON.stringify(storedContacts));
             alert("The contact added to your contact list");
 
@@ -78,17 +77,17 @@ if(showContacts){
   showContacts.addEventListener("click", displayContacts);
 }
 
-
 function displayContacts(){
     user = localStorage.getItem("username");
-    var storedContacts = [];
-    var savedContact = {};
     storedContacts = JSON.parse(localStorage.getItem(user));
-    var table = document.getElementById('contact-table');
+
+    while (table.rows.length > 1) {
+    table.deleteRow(1);
+    }
+
     for(var i = 0; i < storedContacts.length; i++){
 
-      var savedContact = storedContacts[i];
-
+      savedContact = storedContacts[i];
       var currentRow = table.insertRow(-1);
       var currentNameCol = currentRow.insertCell(0);
       var currentFamilyNameCol = currentRow.insertCell(1);
@@ -107,13 +106,14 @@ function displayContacts(){
         modal.style.display = "block";
         var index = this.parentNode.parentNode.rowIndex;
         localStorage.setItem('index', JSON.stringify(index));
-          var firstNameInCurrentRow = document.getElementById("contact-table").rows[index].cells[0].innerText;
 
-          var lastNameInCurrentRow = document.getElementById("contact-table").rows[index].cells[1].innerHTML;
-          var emailInCurrentRow = document.getElementById("contact-table").rows[index].cells[2].innerHTML;
-          newFirstName.value = firstNameInCurrentRow;
-          newLastName.value = lastNameInCurrentRow;
-          newEmail.value = emailInCurrentRow;
+        var firstNameInCurrentRow = document.getElementById("contact-table").rows[index].cells[0].innerText;
+        var lastNameInCurrentRow = document.getElementById("contact-table").rows[index].cells[1].innerHTML;
+        var emailInCurrentRow = document.getElementById("contact-table").rows[index].cells[2].innerHTML;
+
+        newFirstName.value = firstNameInCurrentRow;
+        newLastName.value = lastNameInCurrentRow;
+        newEmail.value = emailInCurrentRow;
       };
 
       currentDeleteBtnInside.id = 'cl-delete';
@@ -123,8 +123,6 @@ function displayContacts(){
           var emailInCurrentRow = document.getElementById("contact-table").rows[index].cells[2].innerHTML;
 
           user = localStorage.getItem("username");
-          var storedContacts = [];
-          var savedContact = {};
           var indexInArray;
           storedContacts = JSON.parse(localStorage.getItem(user));
           for(var i=0; i<storedContacts.length; i++){
@@ -136,6 +134,7 @@ function displayContacts(){
           storedContacts.splice(indexInArray, 1);
           document.getElementById("contact-table").deleteRow(index);
           localStorage.setItem(user, JSON.stringify(storedContacts));
+          // displayContacts();
 
       };
 
@@ -152,7 +151,6 @@ function displayContacts(){
       currentRow.appendChild(currentDeleteBtn);
       currentEditBtn.appendChild(currentEditBtnInside);
       currentDeleteBtn.appendChild(currentDeleteBtnInside);
-
     }
 }
 if(span){
@@ -171,11 +169,12 @@ if (submitEditBtn){
     submitEditBtn.onclick = function(){
 
       var index = JSON.parse(localStorage.index);
-
       var emailInCurrentRow = document.getElementById("contact-table").rows[index].cells[2].innerHTML;
+      var lastNameInCurrentRow = document.getElementById("contact-table").rows[index].cells[1].innerHTML;
+      var firstNameInCurrentRow = document.getElementById("contact-table").rows[index].cells[0].innerHTML;
+
+
       user = localStorage.getItem("username");
-      var storedContacts = [];
-      var savedContact = {};
       var indexInArray = 0;
       storedContacts = JSON.parse(localStorage.getItem(user));
       for(var i=0; i<storedContacts.length; i++){
@@ -187,7 +186,7 @@ if (submitEditBtn){
         var updatedFirstName = newFirstName.value;
         var updatedLastName = newLastName.value;
         var updatedEmail="";
-         if(document.getElementById("contact-table").rows[index].cells[2].value !== newEmail.value){
+         if(emailInCurrentRow != newEmail.value){
                  for(var i=0; i<storedContacts.length; i++){
                      savedContact = storedContacts[i];
                      if(newEmail.value === savedContact["email"]){
@@ -205,22 +204,9 @@ if (submitEditBtn){
               };
 
       storedContacts[indexInArray] = editedContact;
-      document.getElementById("contact-table").rows[index].cells[0].value = editedContact["firstname"];
-      document.getElementById("contact-table").rows[index].cells[1].value = editedContact["familyname"];
-      document.getElementById("contact-table").rows[index].cells[2].value = editedContact["email"];
       localStorage.setItem(user, JSON.stringify(storedContacts));
+      modal.style.display = "none";
       displayContacts();
 
     }
-
-    function findArrayIndex(email, array){
-        for(var i = 0; i<array.length; i++){
-            var obj = array[i];
-            if(obj["email"]===email){
-                return i;
-            }
-        }
-    }
 }
-
-

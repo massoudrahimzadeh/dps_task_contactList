@@ -42,8 +42,7 @@ body{
 }
 #submitEditBtn{
     color: green;
-    padding-top: 10px;
-    width: 80%;
+    width: 40%;
 }
 #showContacts{
     color: green;
@@ -57,5 +56,4 @@ table{
 }
 table, td, th{
     border: 1px solid black;
-
 }
